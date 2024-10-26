@@ -4,19 +4,20 @@ const expense = document.getElementById("expense");
 const category = document.getElementById("category");
 const expenseList = document.querySelector("ul");
 const expensesQuantity = document.querySelector("aside header p span");
+const expensesTotal = document.querySelector("aside header h2");
 
-amount.addEventListener("input", (event)=>{
- let value = amount.value.replace(/\D/g,"");
+amount.addEventListener("input", (event) => {
+    let value = amount.value.replace(/\D/g, "");
 
- value = Number(value) / 100;
+    value = Number(value) / 100;
 
- amount.value = formatCurrencyBRL(value);
+    amount.value = formatCurrencyBRL(value);
 
- console.log(event);
+    console.log(event);
 })
 
-function formatCurrencyBRL(value){
-    value = value.toLocaleString("pt-BR",{
+function formatCurrencyBRL(value) {
+    value = value.toLocaleString("pt-BR", {
         style: "currency",
         currency: "BRL",
     })
@@ -39,8 +40,8 @@ form.onsubmit = (event) => {
     expenseAdd(newExpense);
 }
 
-function expenseAdd(newExpense){
-    try{
+function expenseAdd(newExpense) {
+    try {
         const expenseList = document.querySelector("ul");
 
         const expenseItem = document.createElement("li");
@@ -69,7 +70,7 @@ function expenseAdd(newExpense){
         removeIcon.classList.add("remove-icon");
         removeIcon.setAttribute("src", "img/remove.svg");
         removeIcon.setAttribute("alt", "remover")
-        removeIcon.addEventListener("click", ()=>{
+        removeIcon.addEventListener("click", () => {
             throw new Error("Testando objeto de Error");
         })
 
@@ -78,15 +79,38 @@ function expenseAdd(newExpense){
         expenseList.append(expenseItem);
 
         updateTotals();
-    } catch(error){
+    } catch (error) {
         alert("Não foi possível atualizar a lista de despesas.")
     }
 }
 
-function updateTotals(){
+function updateTotals() {
     try {
         const items = expenseList.children;
-        expensesQuantity.textContent = `${items.length} ${items.length > 1 ? "despesas" : "despesa"}`
+        expensesQuantity.textContent = `${items.length} ${items.length > 1 ? "despesas" : "despesa"}`;
+
+        let total = 0;
+
+        for (let item = 0; item < items.length; item++) {
+            const itemAmount = items[item].querySelector(".expense-amount");
+            let value = itemAmount.textContent.replace(/[^\d,]/g, "").replace(",", ".");
+            value = parseFloat(value);
+
+            if (isNaN(value)) {
+                return alert("Não foi possível calcular o total. O valor não parece ser uma número.")
+            }
+
+            total += Number(value);
+        }
+
+        const symbolBRL = document.createElement("small");
+        symbolBRL.textContent = "R$"
+        total = formatCurrencyBRL(total).toUpperCase().replace("R$", "");
+
+        expensesTotal.innerHTML = "";
+        expensesTotal.append(symbolBRL, total);
+
+        //expensesTotal.textContent = total;
     } catch (error) {
         console.log(error);
         alert("Não foi possível atualizar os totais.")
