@@ -38,6 +38,7 @@ form.onsubmit = (event) => {
     }
 
     expenseAdd(newExpense);
+    formClear();
 }
 
 function expenseAdd(newExpense) {
@@ -70,9 +71,9 @@ function expenseAdd(newExpense) {
         removeIcon.classList.add("remove-icon");
         removeIcon.setAttribute("src", "img/remove.svg");
         removeIcon.setAttribute("alt", "remover")
-        removeIcon.addEventListener("click", () => {
-            throw new Error("Testando objeto de Error");
-        })
+        // removeIcon.addEventListener("click", () => {
+        //     throw new Error("Testando objeto de Error");
+        // })
 
         expenseItem.append(expenseIcon, expenseInfo, expenseAmount, removeIcon);
 
@@ -115,4 +116,18 @@ function updateTotals() {
         console.log(error);
         alert("Não foi possível atualizar os totais.")
     }
+}
+
+expenseList.addEventListener("click", function (event) {
+    if (event.target.classList.contains("remove-icon")) {
+        const item = event.target.closest(".expense");
+        item.remove();
+    }
+})
+
+function formClear() {
+    expense.value = "";
+    category.value = "";
+    amount.value = "";
+    expense.focus();
 }
